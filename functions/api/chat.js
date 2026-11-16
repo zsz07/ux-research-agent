@@ -32,17 +32,9 @@ export async function onRequestPost({ request, env }) {
       return json({ error: "输入不能为空" }, 400);
     }
 
-    const envKeys = Object.keys(env || {});
-    let apiKey = env.DEEPSEEK_API_KEY;
+    const apiKey = env.DEEPSEEK_API_KEY;
     if (!apiKey) {
-      return json({
-        error: "服务器未配置 DEEPSEEK_API_KEY",
-        debug: {
-          envKeys,
-          hasKey: false,
-          msg: "请确认变量加在 Production 环境，且重新部署生效"
-        }
-      }, 500);
+      return json({ error: "服务器未配置 DEEPSEEK_API_KEY" }, 500);
     }
 
     const fullMessages = [
