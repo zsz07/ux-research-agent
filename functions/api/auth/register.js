@@ -12,8 +12,22 @@ export async function onRequestOptions() {
 }
 
 export async function onRequestPost({ request, env }) {
+  const envKeys = Object.keys(env || {});
+  const hasCHAT_KV = !!env.CHAT_KV;
+  const kvType = env.CHAT_KV ? typeof env.CHAT_KV : "undefined";
+  const kvMethods = env.CHAT_KV
+    ? Object.getOwnPropertyNames(Object.getPrototypeOf(env.CHAT_KV))
+    : [];
   if (!env.CHAT_KV) {
-    return json({ error: "服务器未绑定 CHAT_KV" }, 500);
+    return json({
+      error: "服务器未绑定 CHAT_KV",
+      debug: {
+        envKeys,
+        hasCHAT_KV,
+        kvType,
+        msg: "检查 Settings → Bindings 里变量名是否精确为 CHAT_KV（全大写下划线）",
+      },
+    }, 500);
   }
   try {
     const { username, password } = await request.json();
