@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>用户研究专家 Agent</title>
+<title>情绪急救</title>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
   :root {
@@ -12,7 +12,7 @@
     --border: #e4e8ee;
     --text: #1f2937;
     --text-muted: #6b7280;
-    --user: #4f8cff;
+    --user: #d85a30;
     --user-text: #ffffff;
     --ai-bg: #ffffff;
     --ai-text: #1f2937;
@@ -20,7 +20,7 @@
     --sys-text: #92700f;
     --err-bg: #fde8e8;
     --err-text: #c0211d;
-    --accent: #4f8cff;
+    --accent: #d85a30;
   }
 
   * { box-sizing: border-box; }
@@ -68,7 +68,7 @@
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #4f8cff, #8a6cff);
+    background: linear-gradient(135deg, #f0997b, #d85a30);
     color: #fff;
     display: flex;
     align-items: center;
@@ -116,7 +116,7 @@
   }
 
   button.btn.primary:hover {
-    background: #3a78f0;
+    background: #c14a22;
   }
 
   button.btn:disabled {
@@ -178,7 +178,7 @@
     font-family: "JetBrains Mono", "Consolas", "Courier New", monospace;
   }
   .bubble :not(pre) > code {
-    background: rgba(79, 140, 255, 0.1);
+    background: rgba(216, 90, 48, 0.1);
     padding: 1px 5px;
     border-radius: 4px;
     font-size: 13px;
@@ -279,9 +279,9 @@
 <div class="app">
   <header>
     <div class="title">
-      <div class="avatar">UR</div>
+      <div class="avatar">心</div>
       <div>
-        <h1>用户研究专家 Agent</h1>
+        <h1>情绪急救</h1>
         <div class="subtitle">Cloudflare Pages · DeepSeek</div>
       </div>
     </div>
@@ -292,16 +292,16 @@
 
   <div class="messages" id="messages">
     <div class="system-card">
-      <span class="label">系统:</span>已连接用户研究专家。输入消息直接对话，点"新对话"重置上下文。
+      <span class="label">系统:</span>已连接情绪急救助手。说说你遇到的事，我陪你聊聊。点"新对话"重置上下文。
     </div>
   </div>
 
   <footer>
     <div class="input-row">
-      <textarea id="input" placeholder="输入消息与用户研究专家对话…（Enter 发送，Shift+Enter 换行）" rows="1"></textarea>
+      <textarea id="input" placeholder="说说你遇到了什么事…（Enter 发送，Shift+Enter 换行）" rows="1"></textarea>
       <button class="btn primary" id="sendBtn">发送</button>
     </div>
-    <div class="hint">由 Cloudflare Pages 托管 · DeepSeek API 提供推理</div>
+    <div class="hint">由 Cloudflare Pages 托管 · DeepSeek 提供推理 · 不是医疗建议</div>
   </footer>
 </div>
 
