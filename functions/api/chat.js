@@ -47,9 +47,15 @@ const SYSTEM_PROMPT = `${AGENT_RULES}\n\n--- 情绪急救策略库 ---\n\n${SKIL
 const BASE_URL = "https://api.deepseek.com";
 const MODEL = "deepseek-chat";
 
+import { handleOptions, getUserFromRequest } from "./_lib.js";
+
+export async function onRequestOptions() {
+  return handleOptions();
+}
+
 export async function onRequestPost({ request, env }) {
   try {
-    const { messages = [], input = "" } = await request.json();
+    const { messages = [], input = "", convId } = await request.json();
 
     if (!input.trim()) {
       return json({ error: "输入不能为空" }, 400);
@@ -60,9 +66,24 @@ export async function onRequestPost({ request, env }) {
       return json({ error: "服务器未配置 DEEPSEEK_API_KEY" }, 500);
     }
 
+    let user = null;
+    if (env.CHAT_KV) {
+      user = await getUserFromRequest(request, env);
+    }
+
+    const cleanHistory = (messages || [])
+      .filter(
+        (m) =>
+          m &&
+          (m.role === "user" || m.role === "assistant") &&
+          typeof m.content === "string"
+      )
+      .slice(-20)
+      .map((m) => ({ role: m.role, content: m.content }));
+
     const fullMessages = [
       { role: "system", content: SYSTEM_PROMPT },
-      ...messages,
+      ...cleanHistory,
       { role: "user", content: input },
     ];
 
@@ -90,6 +111,9 @@ export async function onRequestPost({ request, env }) {
         "Cache-Control": "no-cache",
         Connection: "keep-alive",
         "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "X-Authed-User": user ? user.username : "",
+        "X-Conv-Id": convId || "",
       },
     });
   } catch (e) {
@@ -97,19 +121,12 @@ export async function onRequestPost({ request, env }) {
   }
 }
 
-export async function onRequestOptions() {
-  return new Response(null, {
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
-  });
-}
-
 function json(obj, status = 200) {
   return new Response(JSON.stringify(obj), {
     status,
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    },
   });
 }
